@@ -1,0 +1,30 @@
+{
+  "name": "@manix-ai/adapters",
+  "version": "1.0.0",
+  "description": "Multi-chain blockchain adapters for MANI X AI",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "lint": "eslint src/",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@manix-ai/types": "workspace:*",
+    "ethers": "^6.8.0",
+    "viem": "^1.19.0"
+  },
+  "devDependencies": {
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2",
+    "@types/node": "^20.8.0"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "@manix-ai/contracts",
+  "version": "1.0.0",
+  "description": "Smart contracts for MANI X AI platform",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/deploy.ts --network",
+    "verify": "hardhat verify",
+    "size": "hardhat size-contracts",
+    "coverage": "hardhat coverage",
+    "gas-report": "REPORT_GAS=true hardhat test"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.2",
+    "@nomicfoundation/hardhat-ethers": "^3.0.4",
+    "@typechain/hardhat": "^8.0.0",
+    "@typechain/ethers-v6": "^0.5.0",
+    "hardhat": "^2.18.0",
+    "hardhat-gas-reporter": "^1.0.9",
+    "solidity-coverage": "^0.8.5",
+    "chai": "^4.3.7",
+    "ethers": "^6.8.0",
+    "typechain": "^8.3.1"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.9.5",
+    "@openzeppelin/contracts-upgradeable": "^4.9.5"
+  }
+}

@@ -1,0 +1,155 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String   @id @default(cuid())
+  walletAddress     String   @unique
+  totalValue        String   @default("0")
+  riskTolerance     String   @default("MODERATE")
+  investmentGoals   String[]
+  investmentHorizon String   @default("MEDIUM")
+  maxDrawdown       Float    @default(0.15)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  transactions      Transaction[]
+  vaultPositions    VaultPosition[]
+  aiRecommendations AIRec[]
+  notifications     Notification[]
+
+  @@map("users")
+}
+
+model Vault {
+  id               String   @id @default(cuid())
+  address          String   @unique
+  name             String
+  symbol           String
+  totalValueLocked BigInt   @default(0)
+  lastUpdated      DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  transactions     Transaction[]
+  vaultPositions   VaultPosition[]
+  riskMetrics      RiskMetric[]
+  aiRecommendations AIRec[]
+
+  @@map("vaults")
+}
+
+model Transaction {
+  id              String   @id @default(cuid())
+  userId          String
+  vaultId         String
+  type            String   // DEPOSIT, WITHDRAW
+  amount          String
+  chainId         String
+  transactionHash String
+  timestamp       DateTime @default(now())
+
+  // Relations
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vault           Vault    @relation(fields: [vaultId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+}
+
+model PendingTransaction {
+  id            String   @id @default(cuid())
+  transactionId String   @unique
+  userId        String
+  amount        String
+  sourceChain   String
+  targetChain   String
+  targetVault   String
+  type          String   // DEPOSIT, WITHDRAW
+  status        String   @default("PENDING") // PENDING, COMPLETED, FAILED
+  timestamp     DateTime @default(now())
+
+  @@map("pending_transactions")
+}
+
+model VaultPosition {
+  id        String @id @default(cuid())
+  userId    String
+  vaultId   String
+  amount    String
+  chainId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vault     Vault  @relation(fields: [vaultId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, vaultId, chainId])
+  @@map("vault_positions")
+}
+
+model AIRec {
+  id             String    @id @default(cuid())
+  userId         String
+  vaultId        String
+  action         String
+  confidence     Int
+  expectedReturn Int
+  reasoning      String
+  status         String    @default("GENERATED") // GENERATED, PENDING, EXECUTED, FAILED
+  executedAt     DateTime?
+  errorMessage   String?
+  timestamp      DateTime  @default(now())
+
+  // Relations
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vault          Vault     @relation(fields: [vaultId], references: [id], onDelete: Cascade)
+
+  @@map("ai_recommendations")
+}
+
+model RiskMetric {
+  id                String   @id @default(cuid())
+  vaultId          String
+  chainId          String
+  apy              Float
+  volatility       Float
+  maxDrawdown      Float
+  sharpeRatio      Float
+  var95            Float
+  var99            Float
+  marketCorrelation Float
+  riskScore        Int
+  timestamp        DateTime @default(now())
+
+  // Relations
+  vault            Vault    @relation(fields: [vaultId], references: [id], onDelete: Cascade)
+
+  @@map("risk_metrics")
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  type      String
+  message   String
+  data      String
+  read      Boolean   @default(false)
+  readAt    DateTime?
+  timestamp DateTime  @default(now())
+
+  // Relations
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}

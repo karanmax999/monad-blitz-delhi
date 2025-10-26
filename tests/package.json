@@ -1,0 +1,23 @@
+{
+  "name": "manix-ai-integration-tests",
+  "version": "1.0.0",
+  "description": "Integration tests for MANI X AI full-stack system",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:api": "playwright test tests/api.spec.ts",
+    "test:e2e": "playwright test tests/e2e/",
+    "test:integration": "playwright test tests/integration/",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.1",
+    "ethers": "^5.7.2",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
