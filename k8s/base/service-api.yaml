@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: manix-api
+  labels:
+    app.kubernetes.io/name: manix-api
+spec:
+  selector:
+    app.kubernetes.io/name: manix-api
+  ports:
+    - name: http
+      port: 3001
+      targetPort: 3001
+  type: ClusterIP
+
+

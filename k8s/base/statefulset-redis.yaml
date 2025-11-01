@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: manix-redis
+  labels:
+    app.kubernetes.io/name: manix-redis
+spec:
+  serviceName: manix-redis
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: manix-redis
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: manix-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          ports:
+            - containerPort: 6379
+          args: ["--save", "60", "1", "--loglevel", "warning"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: manix-redis-pvc
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: manix-redis-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+
+
